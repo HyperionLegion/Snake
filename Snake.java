@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.Timer;
-import javax.swing.JOptionPane;
 //To Do:
 //Clean code to work with Driver
 //change the code for efficiency
 //Highscore
+//Apple class
 //readme.txt
 //input images
 //highscore with kd picture
@@ -29,45 +29,52 @@ public class Snake implements ActionListener, KeyListener{
 	public Random random;
 	public boolean over = false, paused;
 	public Dimension dim;
-      
+   public Snake(int a){
+      start();
+   }
 	public Snake(){
-      int choice = 0;
-  String message = "";
-            message = message + "\n1. Play";
-            message = message + "\n2. About.";
-            message = message + "\n3. Quit.";
-            message = message + "\n4. Other.";
-            choice = Integer.parseInt(JOptionPane.showInputDialog(message));
-            if(choice == 1)
-            dim = Toolkit.getDefaultToolkit().getScreenSize();
+      dim = Toolkit.getDefaultToolkit().getScreenSize();
 		jframe = new JFrame("Snake");
 		jframe.setVisible(true);
-		jframe.setSize(width, length);
+		jframe.setSize(805, 700);
 		jframe.setResizable(false);
 		jframe.setLocation(dim.width / 2 - jframe.getWidth() / 2, dim.height / 2 - jframe.getHeight() / 2);
 		jframe.add(renderPanel = new RenderPanel());
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jframe.addKeyListener(this);
-		startGame();
-            
-            if(choice==2){
-            }     
+		startGame();  
 	}
 
 	public void startGame(){
 		over =  paused = false;
 		time = 0;
 		score = 0;
-		tailLength = 14;
+		tailLength = 2;
 		ticks = 0;
-		direction = DOWN;
-		head = new Point(0, -1);
+		head = new Point((int)(Math.random()*79), (int)(Math.random()*66));
+      if(head.getX()>head.getY()){
+         if(head.getX()>39){
+            direction = LEFT;
+         }
+         else if(head.getX()<39){
+            direction = RIGHT;
+         }
+      }
+      else{
+         if(head.getY()>39)
+            direction = UP;
+         if(head.getY()<39)
+            direction = DOWN;
+      }
 		random = new Random();
 		snakeParts.clear();
 		cherry = new Point(random.nextInt(79), random.nextInt(66));
 		timer.start();
 	}
-
+public void start()
+	{
+		snake = new Snake();
+	}
 	public void actionPerformed(ActionEvent arg){
 		renderPanel.repaint();
 		ticks++;
@@ -106,7 +113,7 @@ public class Snake implements ActionListener, KeyListener{
 				if (head.equals(cherry)){
 					score += 10;
 					tailLength++;
-					cherry.setLocation(random.nextInt(79), random.nextInt(66));
+					cherry.setLocation((int)(Math.random()*79), (int)(Math.random()*66));
 				}
 			}
 		}
