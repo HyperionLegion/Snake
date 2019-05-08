@@ -1,7 +1,42 @@
 import javax.swing.JOptionPane;
+import java.io.*;       		 //the File class
+import java.util.*;     		 //the Scanner class
 public class SnakeDriver{
-	public static Snake snake;
-      public static void main(String[] args) {
-     snake = new Snake();
+   public static Snake yuh;
+   public static void main(String[] args) {
+      int choice = 0;
+      boolean play = false;
+      while(!play){
+         String message = "";
+         message = message + "\n1. Play";
+         message = message + "\n2. About.";
+         message = message + "\n3. Quit.";
+         message = message + "\n4. Other.";
+         choice = Integer.parseInt(JOptionPane.showInputDialog(message));
+         if(choice == 1){
+            yuh = new Snake(1);
+            play = true;
+         }
+         if(choice==2){
+            Scanner infile = null;
+            try{
+               infile = new Scanner(new File("readme.txt") );
+            }
+            catch(FileNotFoundException e){
+               JOptionPane.showMessageDialog(null, "Error: File not found.");
+               System.exit(0);
+            }
+            while(infile.hasNextLine()){
+               System.out.println(infile.nextLine());
+            }
+         }
+         if(choice==3){
+            System.out.println("Come again next time!");
+            System.exit(0);
+         }
+         if(choice==4){
+            System.out.println("To be added...");
+         }
       }
-  }   
+   }
+}   
