@@ -2,7 +2,7 @@ import javax.swing.JOptionPane;
 import java.io.*;       		 //the File class
 import java.util.*;     		 //the Scanner class
 public class SnakeDriver{
-   public static Snake yuh;
+   public static RenderPanel yuh;
    public static void main(String[] args) {
       int choice = 0;
       boolean play = false;
@@ -14,7 +14,7 @@ public class SnakeDriver{
          message = message + "\n4. Other.";
          choice = Integer.parseInt(JOptionPane.showInputDialog(message));
          if(choice == 1){
-            yuh = new Snake(1);
+            yuh = new RenderPanel(1);
             play = true;
          }
          if(choice==2){

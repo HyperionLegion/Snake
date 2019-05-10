@@ -10,11 +10,9 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 //To Do:
-//Clean code to work with Driver
 //change the code for efficiency
 //Highscore
 //Apple class
-//readme.txt
 //input images
 //highscore with kd picture
 public class Snake implements ActionListener, KeyListener{
