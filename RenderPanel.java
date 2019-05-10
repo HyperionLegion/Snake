@@ -5,11 +5,17 @@ import javax.swing.JPanel;
 
 public class RenderPanel extends JPanel{
 	public static final Color GREEN = new Color(1666073);
-
+   public RenderPanel(int a){
+         super();
+      Snake yuh = new Snake(a);
+   }
+   public RenderPanel(){
+      super();
+   }
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		Snake snake = Snake.snake; //wtf is this
-		g.setColor(GREEN);
+		g.setColor(Color.GREEN);
 		g.fillRect(0, 0, 800, 700);
 		g.setColor(Color.BLUE);
 
