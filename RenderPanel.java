@@ -2,9 +2,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import javax.swing.JPanel;
-
+import javax.swing.JLabel;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 public class RenderPanel extends JPanel{
-	public static final Color GREEN = new Color(1666073);
+   public JLabel label = new JLabel("");
+   public JLabel message = new JLabel("");
+   public JLabel appleImage ;
    public RenderPanel(int a){
          super();
       Snake yuh = new Snake(a);
@@ -13,36 +18,38 @@ public class RenderPanel extends JPanel{
       super();
    }
 	public void paintComponent(Graphics g){
+   setLayout(new BorderLayout());
 		super.paintComponent(g);
-		Snake snake = Snake.snake; //wtf is this
+      		Snake snake = Snake.snake;
+      label.setText("Score: " + snake.score + ", Length: " + snake.tailLength + ", Time: " + snake.time / 20);
+      label.setFont((new Font("Comic Sans", Font.BOLD, 30)));
+      label.setBorder(BorderFactory.createLineBorder(Color.black));
+      add(label, BorderLayout.SOUTH);
 		g.setColor(Color.GREEN);
-		g.fillRect(0, 0, 800, 700);
-		g.setColor(Color.BLUE);
-
+		g.fillRect(0, 0, 800, 600);
+		g.setColor(Color.ORANGE);
+      g.fillRect(0, 600, 800, 700);
+      		g.setColor(Color.BLUE);
+            ImageIcon icon = new ImageIcon("apple.jpg");
+      icon.paintIcon(this, g, (int)snake.appleGetX() * Snake.SCALE, (int)snake.appleGetY() * Snake.SCALE);
 		for (Point point : snake.snakeParts){
-			g.fillRect(point.x *Snake.SCALE, point.y * Snake.SCALE, 1*Snake.SCALE, 1*Snake.SCALE);
+			g.fillRect((int)point.getX() *Snake.SCALE, (int)point.getY() * Snake.SCALE, Snake.SCALE, Snake.SCALE);
 		}
-		
-		g.fillRect(snake.head.x * Snake.SCALE, snake.head.y * Snake.SCALE, Snake.SCALE, Snake.SCALE);
-		
-		g.setColor(Color.RED);
-		
-		g.fillRect(snake.cherry.x * Snake.SCALE, snake.cherry.y * Snake.SCALE, Snake.SCALE, Snake.SCALE);
-		
-		String string = "Score: " + snake.score + ", Length: " + snake.tailLength + ", Time: " + snake.time / 20;
-		
-		g.setColor(Color.white);
-		
-		g.drawString(string, (int) (getWidth() / 2 - string.length() * 2.5f), 10);
-
-		string = "Game Over!";
-
-		if (snake.over)
-			g.drawString(string, (int) (getWidth() / 2 - string.length() * 2.5f), (int) snake.dim.getHeight() / 4);
-
-		string = "Paused!";
-
-		if (snake.paused && !snake.over)
-			g.drawString(string, (int) (getWidth() / 2 - string.length() * 2.5f), (int) snake.dim.getHeight() / 4);
-	}
+		g.fillRect((int)snake.head.getX() * Snake.SCALE, (int)snake.head.getY() * Snake.SCALE, Snake.SCALE, Snake.SCALE);
+				   message.setFont((new Font("Comic Sans", Font.BOLD, 30)));
+      if (snake.over){
+      		   message.setFont((new Font("Comic Sans", Font.BOLD, 70)));
+               message.setHorizontalTextPosition(JLabel.CENTER);
+message.setText("Game Over!" );
+      add(message, BorderLayout.CENTER);
+}
+		if (snake.paused && !snake.over){
+message.setText("Paused!" );
+      add(message, BorderLayout.NORTH);
+      }
+      if(!snake.paused&&!snake.over){
+        message.setText("");
+       add(message, BorderLayout.CENTER);
+      }
+}
 }

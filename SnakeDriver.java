@@ -1,6 +1,7 @@
 import javax.swing.JOptionPane;
 import java.io.*;       		 //the File class
 import java.util.*;     		 //the Scanner class
+import javax.swing.JLabel;
 public class SnakeDriver{
    public static RenderPanel yuh;
    public static void main(String[] args) {
@@ -11,7 +12,7 @@ public class SnakeDriver{
          message = message + "\n1. Play";
          message = message + "\n2. About.";
          message = message + "\n3. Quit.";
-         message = message + "\n4. Other.";
+         message = message + "\n4. GitHub.";
          choice = Integer.parseInt(JOptionPane.showInputDialog(message));
          if(choice == 1){
             yuh = new RenderPanel(1);
@@ -35,7 +36,7 @@ public class SnakeDriver{
             System.exit(0);
          }
          if(choice==4){
-            System.out.println("To be added...");
+            System.out.println("GitHub Link: https://github.com/HyperionLegion/Snake");
          }
       }
    }
