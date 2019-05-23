@@ -8,27 +8,27 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import java.util.*;   		   //the Scanner class
+import java.io.*;             //the File class
+import javax.swing.*;         //the JOptionPane class
 //To Do:
 //change the code for efficiency
 //Highscore
 //Apple class
 //input images
 //highscore with kd picture
-public class Snake implements ActionListener, KeyListener{
+public class Snake extends Object implements ActionListener, KeyListener{
    public static Snake snake;
    public JFrame jframe;
    public RenderPanel renderPanel;
    public Timer timer = new Timer(20, this);
    public ArrayList<Point> snakeParts = new ArrayList<Point>();
    public static final int UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, SCALE = 10;
-   public int ticks = 0, direction = DOWN, score, tailLength = 10, time = 0, choice, width = 805, length = 700;
+   public int ticks = 0, direction = DOWN, score, tailLength = 10, time = 0, choice, width = 805, length = 700, highscore;
    public Point head;
    public Apple apple;
    public boolean over = false, paused;
    public Dimension dim;
-   public Snake(int a){
-      snake = new Snake();
-   }
    public Snake(){
       dim = Toolkit.getDefaultToolkit().getScreenSize();
       jframe = new JFrame("Snake");
@@ -39,10 +39,33 @@ public class Snake implements ActionListener, KeyListener{
       jframe.add(renderPanel = new RenderPanel());
       jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       jframe.addKeyListener(this);
-      startGame();  
+      startGame();
    }
-
+   public Snake(int a ){
+      snake = new Snake();
+   }
+   public Snake(JFrame jframe){
+      dim = Toolkit.getDefaultToolkit().getScreenSize();
+      jframe = new JFrame("Snake");
+      jframe.setVisible(true);
+      jframe.setSize(805, 700);
+      jframe.setResizable(false);
+      jframe.setLocation(dim.width / 2 - jframe.getWidth() / 2, dim.height / 2 - jframe.getHeight() / 2);
+      jframe.add(renderPanel = new RenderPanel());
+      jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      jframe.addKeyListener(this);
+      startGame();
+   }
    public void startGame(){
+      Scanner infile = null;
+      try{
+         infile = new Scanner(new File("scoreboard.txt"));
+      }
+      catch(FileNotFoundException e){
+         JOptionPane.showMessageDialog(null,"The file could not be found.");
+         System.exit(0);
+      }
+      highscore = infile.nextInt();
       over =  paused = false;
       time = 0;
       score = 0;
@@ -70,11 +93,9 @@ public class Snake implements ActionListener, KeyListener{
    public void actionPerformed(ActionEvent arg){
       renderPanel.repaint();
       ticks++;
-   
       if (ticks % 2 == 0 && !over && !paused){
          time++;
          snakeParts.add(new Point(head.x, head.y));
-      
          if (direction == UP){
             if (head.getY() - 1 >= 0 && noTailAt((int)head.getX(), (int)head.getY() - 1))
                head = new Point((int)head.getX(), (int)head.getY() - 1);
@@ -100,25 +121,39 @@ public class Snake implements ActionListener, KeyListener{
             else
                over = true;
          }
-         if (snakeParts.size() > tailLength)
+         if (snakeParts.size() > tailLength){
             snakeParts.remove(0);
-            if (head.getX()==apple.getX()&&head.getY()==apple.getY()){
-               score += 10;
-               tailLength = tailLength + 3;
-               apple.setLocation((int)(Math.random()*79), (int)(Math.random()*60));
+         }
+         if (head.getX()==apple.getX()&&head.getY()==apple.getY()){
+            score += 10;
+            tailLength = tailLength + 3;
+            apple.setLocation((int)(Math.random()*79), (int)(Math.random()*60));
+         }
+      }
+      if(over){
+ if(score>highscore){
+            PrintStream outfile = null;
+            try{
+               outfile = new PrintStream(new FileOutputStream("scoreboard.txt"));
+            }
+            catch(FileNotFoundException e){
+               JOptionPane.showMessageDialog(null,"The file could not be created.");
+            } 
+            String name = JOptionPane.showInputDialog("New High Score! \n Name: ");
+            String date = JOptionPane.showInputDialog("Date: ");
+            highscore = score;
+            outfile.println(score + " " + name + " " + date);
          }
       }
    }
-   public boolean noTailAt(int x, int y){
+    public boolean noTailAt(int x, int y){
       for (Point point : snakeParts){
          if (point.equals(new Point(x, y)))
             return false;
       }
       return true;
-   }
-      
-   public void keyPressed(KeyEvent e)
-   {
+   } 
+   public void keyPressed(KeyEvent e){
       int i = e.getKeyCode();
       if ((i == KeyEvent.VK_A || i == KeyEvent.VK_LEFT) && direction != RIGHT)
          direction = LEFT;
@@ -132,8 +167,9 @@ public class Snake implements ActionListener, KeyListener{
       if (i == KeyEvent.VK_SPACE){
          if (over)
             startGame();
-         else
+         else{
             paused = !paused;
+         }
       }
    }
    public int appleGetX(){
@@ -142,13 +178,23 @@ public class Snake implements ActionListener, KeyListener{
    public int appleGetY(){
       return apple.getY();
    }
-   public void keyReleased(KeyEvent e)
-   {
-      //abstract bruh
+   public int getX(){
+      return (int)head.getX();
    }
-
-   public void keyTyped(KeyEvent e)
-   {
-      //abstract bruh
+   public int getY(){
+      return (int)head.getY();
+   }
+   public int getScore(){
+      return score;
+   }
+   public int getTime(){
+      return time;
+   }
+   public int getTailLength(){
+      return tailLength;
+   }
+   public void keyReleased(KeyEvent e){
+   }
+   public void keyTyped(KeyEvent e){
    }
 }
