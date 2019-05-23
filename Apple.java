@@ -7,7 +7,7 @@ import java.awt.Point;
 //Apple class
 //input images
 //highscore with kd picture
-public class Apple{
+public class Apple extends Object{
    public Point apple;
    public boolean over = false, paused;
    public Dimension dim;

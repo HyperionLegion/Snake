@@ -22,7 +22,7 @@ public class SnakeDriver{
             Scanner infile = null;
             try{
                infile = new Scanner(new File("readme.txt") );
-            }
+            } 
             catch(FileNotFoundException e){
                JOptionPane.showMessageDialog(null, "Error: File not found.");
                System.exit(0);
@@ -40,4 +40,4 @@ public class SnakeDriver{
          }
       }
    }
-}   
+}
