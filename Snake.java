@@ -11,13 +11,14 @@ import javax.swing.Timer;
 import java.util.*;   		   //the Scanner class
 import java.io.*;             //the File class
 import javax.swing.*;         //the JOptionPane class
+import java.util.concurrent.LinkedBlockingQueue;
 //To Do:
 //change the code for efficiency
 //Highscore
 //Apple class
 //input images
 //highscore with kd picture
-public class Snake extends Object implements ActionListener, KeyListener{
+public class Snake extends Object implements ActionListener, KeyListener {
    public static Snake snake;
    public JFrame jframe;
    public RenderPanel renderPanel;
@@ -29,8 +30,10 @@ public class Snake extends Object implements ActionListener, KeyListener{
    public Apple apple;
    public boolean over = false, paused;
    public Dimension dim;
+   public Queue<Integer> moveBuffer; // buffer movements and process only one per tick
    public Snake(){
       dim = Toolkit.getDefaultToolkit().getScreenSize();
+      moveBuffer = new LinkedBlockingQueue<Integer>();
       jframe = new JFrame("Snake");
       jframe.setVisible(true);
       jframe.setSize(805, 700);
@@ -96,6 +99,16 @@ public class Snake extends Object implements ActionListener, KeyListener{
       if (ticks % 2 == 0 && !over && !paused){
          time++;
          snakeParts.add(new Point(head.x, head.y));
+         // process any buffered movements
+         if (moveBuffer.peek() != null)
+         {
+            int move = moveBuffer.remove();
+            if (move == UP && direction != DOWN ||
+                move == DOWN && direction != UP ||
+                move == RIGHT && direction != LEFT ||
+                move == LEFT && direction != RIGHT)
+                direction = move;
+         }
          if (direction == UP){
             if (head.getY() - 1 >= 0 && noTailAt((int)head.getX(), (int)head.getY() - 1))
                head = new Point((int)head.getX(), (int)head.getY() - 1);
@@ -155,14 +168,14 @@ public class Snake extends Object implements ActionListener, KeyListener{
    } 
    public void keyPressed(KeyEvent e){
       int i = e.getKeyCode();
-      if ((i == KeyEvent.VK_A || i == KeyEvent.VK_LEFT) && direction != RIGHT)
-         direction = LEFT;
-      if ((i == KeyEvent.VK_D || i == KeyEvent.VK_RIGHT) && direction != LEFT)
-         direction = RIGHT;
-      if ((i == KeyEvent.VK_W || i == KeyEvent.VK_UP) && direction != DOWN)
-         direction = UP;
-      if ((i == KeyEvent.VK_S || i == KeyEvent.VK_DOWN) && direction != UP)
-         direction = DOWN;
+      if (i == KeyEvent.VK_A || i == KeyEvent.VK_LEFT)
+         moveBuffer.add(LEFT);
+      if (i == KeyEvent.VK_D || i == KeyEvent.VK_RIGHT)
+         moveBuffer.add(RIGHT);
+      if (i == KeyEvent.VK_W || i == KeyEvent.VK_UP)
+         moveBuffer.add(UP);
+      if (i == KeyEvent.VK_S || i == KeyEvent.VK_DOWN)
+         moveBuffer.add(DOWN);
    
       if (i == KeyEvent.VK_SPACE){
          if (over)
